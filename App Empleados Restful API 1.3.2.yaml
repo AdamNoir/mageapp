@@ -1,0 +1,1164 @@
+openapi: 3.0.1
+info:
+  title: Benavides Empleados RESTful API
+  description: RESTful API v1.0 for Benavides Employees
+  termsOfService: https://www.benavides.com.mx/terminos-y-condiciones
+  contact:
+    email: sbenitez@benavides.com.mx
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Benavides Mexico
+  url: https://www.benavides.com.mx/nosotros
+servers:
+#- url: https://digitalservices.benavides.com.mx/protected/rest/employeeapp/api/v1
+- url: "/api"
+tags:
+- name: Empleado
+  description: Accesos a Métodos de Perfil de Empleado
+- name: Nominas
+  description: Accesos a Métodos de Nóminas
+- name: Vales Despensa
+  description: Accesos a Métodos de Vales de Despensa
+- name: Tarjetas
+  description: Accesos a Métodos de Tarjetas ABF y de Lealtad
+- name: Comisiones
+  description: Accesos a Métodos de Comisiones
+- name: Pólizas de Seguro
+  description: Accesos a Métodos de Pólizas de Seguro  
+paths:
+  /empleados/{noEmpleado}:
+    get:
+      tags:
+      - Empleado
+      summary: Obtiene los datos del empleado
+      operationId: employee.employeeGet
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string      
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+    put:
+      tags:
+      - Empleado
+      summary: Actualiza datos de Perfil
+      operationId: employee.employeePut
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        description: Json solicitud
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdateRequest'
+      responses:
+        201:
+          description: Successful Operation
+          content: {}
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []    
+  /empleados/{noEmpleado}/nomina/recibos:
+    get:
+      tags:
+      - Nominas
+      summary: Obtiene listado de recibos en un rango de fechas
+      operationId: employee.employeePayrollReceiptsSearch
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string       
+      - name: fechaInicio
+        in: query 
+        description: Fecha de Inicio
+        required: true
+        schema:
+          type: string
+          format: date
+          example: "YYYY-MM-dd"
+      - name: fechaFin
+        in: query 
+        description: Fecha de Inicio
+        required: true
+        schema:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"  
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeePayrollReceiptsSearchResponse"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/nomina/recibos/{intAnio}/{intPeriodo}/{strtiponomina}:
+    get:
+      tags:
+      - Nominas
+      summary: Obtiene el detalle de un recibo de nómina
+      operationId: employee.employeePayrollReceiptGet
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string 
+      - name: intAnio
+        in: path
+        description: Año
+        required: true
+        schema:
+          type: integer 
+          example: "2023"
+      - name: intPeriodo
+        in: path
+        description: Periodo
+        required: true
+        schema:
+          type: integer
+          example: "20"
+      - name: strtiponomina
+        in: path
+        description: Tipo Nomina
+        required: true
+        schema:
+          type: string
+          example: "A2"          
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeePayrollReceipt"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/vales:
+    get:
+      tags:
+      - Vales Despensa
+      summary: Obtiene listado de vales de despensa en un rango de fechas
+      operationId: employee.employeeVouchersSearch
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeVouchersSearchResponse"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/vales/{intAnio}/{intPeriodo}:
+    get:
+      tags:
+      - Vales Despensa
+      summary: Obtiene el detalle de un vale de despensa
+      operationId: employee.employeeVoucherGet
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string 
+      - name: intAnio
+        in: path
+        description: Año
+        required: true
+        schema:
+          type: integer 
+          example: "2023"
+      - name: intPeriodo
+        in: path
+        description: Periodo
+        required: true
+        schema:
+          type: integer
+          example: "20"
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeVoucher"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/tarjetas/abf:
+    get:
+      tags:
+      - Tarjetas
+      summary: Obtiene los datos de la tarjeta abf de un empleado
+      operationId: employee.abfCardGet
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string      
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeAbfCard"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/tarjetas/lealtad:
+    get:
+      tags:
+      - Tarjetas
+      summary: Obtiene los datos de la tarjeta de Lealtad del Empleado
+      operationId: employee.loyaltyCardGet
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string      
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeLoyaltyCard"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []  
+    put:
+      tags:
+      - Tarjetas
+      summary: Actualiza los datos de la tarjeta de Lealtad del Empleado
+      operationId: employee.loyaltyCardPut
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        description: Json solicitud
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoyaltyCardUpdateRequest'
+      responses:
+        201:
+          description: Successful Operation
+          content: {}
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/comisiones:
+    get:
+      tags:
+      - Comisiones
+      summary: Obtiene las comisiones del empleado en un rango de fechas
+      operationId: employee.employeeCommisionsSearch
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string       
+      - name: fechaInicio
+        in: query 
+        description: Fecha de Inicio
+        required: true
+        schema:
+          type: string
+          format: date
+          example: "YYYY-MM-dd"
+      - name: fechaFin
+        in: query 
+        description: Fecha de Inicio
+        required: true
+        schema:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"  
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeCommisionsSearchResponse"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/comisiones/detalle:
+    get:
+      tags:
+      - Comisiones
+      summary: Obtiene el detalle de las comisiones del empleado en un rango de fechas
+      operationId: employee.employeeCommisionDetailSearch
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string       
+      - name: fechaInicio
+        in: query 
+        description: Fecha de Inicio
+        required: true
+        schema:
+          type: string
+          format: date
+          example: "YYYY-MM-dd"
+      - name: fechaFin
+        in: query 
+        description: Fecha de Inicio
+        required: true
+        schema:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"  
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeCommisionDetailSearchResponse"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []
+  /empleados/{noEmpleado}/polizasseguro:
+    get:
+      tags:
+      - Pólizas de Seguro
+      summary: Obtiene las polizas de seguro ligadas al empleado
+      operationId: employee.employeeInsuranceSearch
+      parameters:
+      - name: noEmpleado
+        in: path
+        description: Número de Empleado
+        required: true
+        schema:
+          type: string
+      - name: strTipo
+        in: query 
+        description: Tipo de Póliza
+        schema:
+          type: string
+          example: "GM | GF" 
+      responses:
+        200:
+          description: Successful Operation
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeInsuranceSearchResponse"
+        400:
+          description: Bad Request
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+      security:
+      - sso_auth2: []      
+components:
+  schemas:
+    Employee:
+      type: object
+      required:
+        - intCompaniaId
+        - strDescripcionCompania
+        - strNoRegistroPatronal
+        - intEmpleadoId
+        - strNombreEmpleado
+        - strCentroCostos
+      properties:
+        intCompaniaId:
+          type: integer
+          format: int64
+          nullable: false
+          description: "No. CIA."
+        strDescripcionCompania:
+          type: string
+          maxLength: 80
+          nullable: false
+          description: "NOMBRE DE LA EMPRESA"
+        strRfcCompania:
+          type: string
+          maxLength: 15
+          nullable: true
+          description: "R.F.C DE LA EMPRESA"
+        strNoRegistroPatronal:
+          type: string
+          maxLength: 15
+          nullable: false
+          description: "No.DE REGISTRO PATRONAL"
+        intEmpleadoId:
+          type: integer
+          format: int64
+          nullable: false
+          description: "No. TRAB."
+        strNombre:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Nombre Trabajador"
+        strApellidoPaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido paterno Trabajador"
+        strApellidoMaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido Materno Trabajador"
+        dtmFechaNacimiento:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+        strRFC:
+          type: string
+          maxLength: 15
+          nullable: true
+          description: "REG.FED. DE CONT"
+        strIMSS:
+          type: string
+          maxLength: 15
+          nullable: true
+          description: "No de AFILIACION DEL I.M.S.S."
+        strCentroCostos:
+          type: string
+          maxLength: 1
+          nullable: false
+          description: "No. DEPTO"
+        strNombreCentro:
+          type: string
+          maxLength: 40
+          nullable: true
+          description: "NOMBRE DEL DEPARTAMENTO"
+        strPuestoDescripcion:
+          type: string
+          maxLength: 40
+          nullable: true
+        dtmFechaIngreso:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+        strEmail:
+          type: string
+          maxLength: 100
+          nullable: true
+        blnGeneraComision:
+          type: integer
+        strUrlFotoPerfil:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: "https://www.somedomain.com/some/path/profile/picture.png"
+    EmployeeUpdateRequest:
+      type: object
+      properties:    
+        strFotoPerfil:
+          type: string
+          nullable: true
+          description: "Foto de Perfil en formato png codificada en base64"
+          example: "iVBORw0KGgoAAAA...AAASUVORK5CYII="    
+    EmployeePayrollReceiptsSearchResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/EmployeePayrollReceiptSearchResponse"          
+    EmployeePayrollReceiptSearchResponse:
+      type: object
+      required:
+        - intAnio
+        - intPeriodo
+        - dtmFechaInicio
+        - dtmFechaTerminacion
+      properties:
+        intAnio:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Año"
+        intMes:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Mes"
+        intPeriodo:
+          type: integer
+          format: int
+          nullable: false
+          description: "Periodo"
+        dtmFechaInicio:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false  
+          description: "Del"
+        dtmFechaTerminacion:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Al"
+        strtiponomina:
+          type: string   
+          example: "01|A2|RU"
+          nullable: false
+          description: "Tipo de Nomina"
+        strdescripcion:
+          type: string
+          example: "Nomina Quincenal"
+          nullable: false
+          description: "Descripcion Tipo de Nomina"
+    EmployeePayrollReceiptHeader:
+      type: object
+      required:
+        - intCompaniaId
+        - strDescripcionCompania
+        - strNoRegistroPatronal
+        - intEmpleadoId
+        - strNombreEmpleado
+        - strCentroCostos
+      properties:
+        intAnio:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Año"
+        intPeriodo:
+          type: integer
+          format: int
+          nullable: false
+          description: "Periodo"
+        dtmFechaInicio:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Del"
+        dtmFechaTerminacion:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Al"              
+        intCompaniaId:
+          type: integer
+          format: int64
+          nullable: false
+          description: "No. CIA."
+        strDescripcionCompania:
+          type: string
+          maxLength: 80
+          nullable: false
+          description: "NOMBRE DE LA EMPRESA"
+        strRfcCompania:
+          type: string
+          maxLength: 15
+          nullable: true
+          description: "R.F.C DE LA EMPRESA"
+        strNoRegistroPatronal:
+          type: string
+          maxLength: 15
+          nullable: false
+          description: "No.DE REGISTRO PATRONAL"
+        intEmpleadoId:
+          type: integer
+          format: int64
+          nullable: false
+          description: "No. TRAB."
+        strNombre:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Nombre Trabajador"
+        strApellidoPaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido paterno Trabajador"
+        strApellidoMaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido Materno Trabajador"
+        dtmFechaNacimiento:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+        strRFC:
+          type: string
+          maxLength: 15
+          nullable: true
+          description: "REG.FED. DE CONT"
+        strIMSS:
+          type: string
+          maxLength: 15
+          nullable: true
+          description: "No de AFILIACION DEL I.M.S.S."
+        strCentroCostos:
+          type: string
+          maxLength: 1
+          nullable: false
+          description: "No. DEPTO"
+        strNombreCentro:
+          type: string
+          maxLength: 40
+          nullable: true
+          description: "NOMBRE DEL DEPARTAMENTO"
+        fltSalarioIntegrado:
+          type: number
+          format: currency
+          nullable: false
+          description: "S.D.I IMSS"
+        fltTotalPercepciones:
+          type: number
+          format: currency
+          nullable: false
+          description: "TOTAL PERCEPCIONES"
+        fltTotalDeducciones:
+          type: number
+          format: currency
+          nullable: false
+          description: "TOTAL DEDUCCIONES"
+        fltTotalSaldo:
+          type: number
+          format: currency
+          nullable: false
+          description: "TOTAL NETO"
+        strtiponomina:
+          type: string   
+          example: "01|A2|RU"
+          nullable: false
+          description: "Tipo de Nomina"
+        strdescripcion:
+          type: string
+          example: "Nomina Quincenal"
+          nullable: false
+          description: "Descripcion Tipo de Nomina"    
+    EmployeePayrollReceiptDetail:
+      type: object
+      required:
+        - intConceptoId
+        - fltSalarioIntegrado
+      properties:
+        fltTiempoDeLaTransaccion:
+          type: number
+          format: float
+          nullable: true
+          description: "Dias"
+        fltImporteDeLaTransaccion:
+          type: number
+          format: currency
+          nullable: true
+          description: "1 -> PERCEPCIONES, 2 -> DEDUCCIONES"
+        fltSaldoDeTransacion:
+          type: number
+          format: currency
+          nullable: true
+          description: "SALDO"
+        intConceptoId:
+          type: integer
+          format: int64
+          nullable: false
+          description: "CLAVE"
+        strdescripcionconcepto:
+          type: string
+          maxLength: 40
+          nullable: true
+          description: "CONCEPTO"
+        strTipoDeTransaccion:
+          type: string
+          format: binary
+          nullable: true
+    EmployeePayrollReceipt:
+      allOf:
+        - $ref: '#/components/schemas/EmployeePayrollReceiptHeader'     
+      type: object
+      properties:
+        conceptos:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmployeePayrollReceiptDetail"
+    EmployeeVouchersSearchResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/EmployeeVoucherSearchResponse"
+    EmployeeVoucherSearchResponse:
+      type: object
+      required:
+        - intAnio
+        - intPeriodo
+        - dtmFechaInicio
+        - dtmFechaTerminacion
+      properties:
+        intAnio:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Año"
+        intMes:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Mes"     
+        intPeriodo:
+          type: integer
+          format: int
+          nullable: false
+          description: "Periodo"
+        dtmFechaInicio:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false  
+          description: "Del"
+        dtmFechaTerminacion:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Al"
+    EmployeeVoucher:
+      allOf:
+        - $ref: '#/components/schemas/EmployeeVoucherHeader'
+      type: object
+      properties:
+        conceptos:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmployeeVoucherDetail"
+    EmployeeVoucherHeader:
+      type: object
+      required:
+        - intCompaniaId
+        - strDescripcionCompania
+        - strNoRegistroPatronal
+        - intEmpleadoId
+        - strNombreEmpleado
+        - strCentroCostos
+      properties:
+        intAnio:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Año"
+        intPeriodo:
+          type: integer
+          format: int
+          nullable: false
+          description: "Periodo"
+        dtmFechaInicio:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false  
+          description: "Del"
+        dtmFechaTerminacion:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Al"              
+        intCompaniaId:
+          type: integer
+          format: int64
+          nullable: false
+        strDescripcionCompania:
+          type: string
+          maxLength: 80
+          nullable: false
+        strRfcCompania:
+          type: string
+          maxLength: 15
+          nullable: true
+        strNoRegistroPatronal:
+          type: string
+          maxLength: 15
+          nullable: false
+        intEmpleadoId:
+          type: integer
+          format: int64
+          nullable: false
+          description: "No. Trab."
+        strNombre:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Nombre Trabajador"
+        strApellidoPaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido paterno Trabajador"
+        strApellidoMaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido Materno Trabajador"
+        strRFC:
+          type: string
+          maxLength: 15
+          nullable: true
+        strIMSS:
+          type: string
+          maxLength: 15
+          nullable: true
+        strCentroCostos:
+          type: string
+          maxLength: 1
+          nullable: false
+          description: "Centro de Costos"
+        strNombreCentro:
+          type: string
+          maxLength: 40
+          nullable: true
+    EmployeeVoucherDetail:
+      type: object
+      required:
+        - intConceptoId
+        - fltSalarioIntegrado
+      properties:
+        intConceptoId:
+          type: integer
+          format: int64
+          nullable: false
+          description: "CLAVE"
+        fltImporteDeLaTransaccion:
+          type: number
+          format: currency
+          nullable: true  
+        strDescripcion:
+          type: string
+          maxLength: 40
+          nullable: true
+        strTipoDeTransaccion:
+          type: string
+          format: binary
+          nullable: true
+    EmployeeAbfCard:
+      type: object
+      properties:
+        intNumeroCredencialABF:
+          type: string
+          maxLength: 20
+          nullable: false          
+        intEmpleadoId:
+          type: integer
+          format: int64
+          nullable: false
+        strRFC:
+          type: string
+          maxLength: 15
+          nullable: true          
+        strNombre:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Nombre Trabajador"
+        strApellidoPaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido paterno Trabajador"
+        strApellidoMaterno:
+          type: string
+          maxLength: 60
+          nullable: true
+          description: "Apellido Materno Trabajador"
+        strPuestoDescripcion:
+          type: string
+          maxLength: 40
+          nullable: true
+    EmployeeLoyaltyCard:
+      type: object
+      properties:
+        intNoTarjetaLealtad:
+          type: integer
+          maxLength: 18
+          nullable: false
+    LoyaltyCardUpdateRequest:
+      type: object
+      properties:
+        intNoTarjetaLealtad:
+          type: integer
+          maxLength: 18
+          nullable: false
+    EmployeeCommisionsSearchResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/EmployeeCommisionSearchResponse" 
+    EmployeeCommisionSearchResponse:
+      type: object
+      properties:
+        intAnio:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Año"
+        intMes:
+          type: integer
+          format: int64
+          nullable: false
+          description: "Mes"
+        dtmFechaInicio:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false  
+          description: "Del"
+        dtmFechaFin:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Al"
+        dtmFechaPago:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Al"
+        dtmFechaCorte:
+          type: string   
+          format: date
+          example: "YYYY-MM-dd"
+          nullable: false
+          description: "Al"
+        strPeriodo:
+          type: string
+          maxLength: 20
+          nullable: true
+          description: "Periodo"
+        strTipoNomina:
+          type: string
+          maxLength: 20
+          nullable: true
+          description: "Semanal | Quincenal"
+        strUrlArchivo:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "Url al pdf de la póliza"  
+    EmployeeCommisionDetailSearchResponse:
+      type: object
+      properties:
+        fltComisionEmpleadoPuntajeImporteComisionFarmacia:
+          type: number
+          format: currency
+          nullable: false
+        fltComisionEmpleadoPuntajeImporteComisionConsumo:
+          type: number
+          format: currency
+          nullable: false
+    EmployeeInsuranceSearchResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/EmployeeInsurance"
+    EmployeeInsurance:
+      type: object
+      properties:
+        strNoPoliza:
+          type: string
+          maxLength: 30
+          nullable: true
+          description: "Número de Póliza"
+        strTipo:
+          type: string
+          maxLength: 20
+          nullable: true
+          description: "Tipo de Póliza"
+        strLabelFile:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "Gastos Medidos - Tarjeta | Gastos Medidos - Certificado | Gastos Funerarios"     
+        strUrlFile:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: "Url Achivo"          
+  securitySchemes:
+    sso_auth2:
+      type: oauth2
+      description: This API uses OAuth 2.0
+      x-tokenInfoFunc: auth.verifyToken
+      flows:
+        password:
+          tokenUrl: https://rhssotest.benavides.com.mx/auth/realms/apps-test/protocol/openid-connect/token/
+          #tokenUrl: https://id.nyva.io/auth/realms/external/protocol/openid-connect/token
+          scopes: {}
